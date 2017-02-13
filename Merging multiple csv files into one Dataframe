@@ -1,0 +1,28 @@
+# Merging of csv files into one dataframe is an important question we need to answer. The files from the Citibike dataset are individual csvs, each representing a month's data.So for each year, we need to merge 12 csvs into one dataframe. The code below can achieve that.
+
+#The first step is to put all the csv files in one folder. I have put all the data of 2015 bike rentals in the folder:
+"C:/Users/asarvayy/Downloads/2015"
+
+#We then merge all these 12 files into one dataframe. In SQL terms, what we are performing is an outer join. But before that, we need to notice that the column names are not the same throughout the files, and we normalise them. The first step, though, is to store the filenames in one object
+
+setwd("C:/Users/asarvayy/Downloads/2015")
+filenames <- list.files()
+
+#We next create a list and store all these individual files as individual csvs, using the lapply function
+
+datalist <- lapply(filenames, function(x){read.csv(file = x, header = TRUE)})
+
+#The next step is to make sure all the column names are same in all the individual dataframes
+
+for(i in 1:length(datalist)){
+  colnames(datalist[[i]]) <- colnames(datalist[[1]])
+}
+
+#It is now time to merge these into one major object using the merge() and Reduce() functions
+
+ final <- Reduce(function(x,y) {merge(x,y, all = TRUE)}, datalist)
+
+#We write this to a csv
+
+write.csv(final. file + "2015final.csv")
+ 
